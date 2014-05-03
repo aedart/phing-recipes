@@ -9,22 +9,22 @@
 	Display the default available commands
     *********************************************************************-->
     <target name="help" description="Displays a list of all available targets to invoke">
-	    <!--
-		    A quick and dirty way to display all available targets in
-		    this build script.
+	<!--
+		A quick and dirty way to display all available targets in
+		this build script.
 
-		    NOTE: targets with the property 'hidden="true"' will be ignored
-		    from the displayed list.
-	    -->
+		NOTE: targets with the property 'hidden="true"' will be ignored
+		from the displayed list.
+	-->
 
-	    <!-- Property with phing command to execute, for this build file -->
-	    <property name="listCommand" value="phing ${phing.file} -list -quiet" />
+	<!-- Property with phing command to execute, for this build file -->
+	<property name="listCommand" value="phing ${phing.file} -list -quiet" />
 
-	    <!-- invoke -->
-	    <exec command="${listCommand}" outputProperty="targetList" />
+	<!-- invoke -->
+	<exec command="${listCommand}" outputProperty="targetList" />
 
-	    <!-- output -->
-	    <echo>${line.separator}${targetList}</echo>
+	<!-- output -->
+	<echo>${line.separator}${targetList}</echo>
     </target>
 
     <target name="tmp" description="A test target">
