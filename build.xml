@@ -26,5 +26,13 @@
 	    <!-- output -->
 	    <echo>${line.separator}${targetList}</echo>
     </target>
-    
+
+    <target name="tmp" description="A test target">
+	
+    </target>
+
+    <target name="tmp" description="A HIDDEN test target" hidden="true">
+	
+    </target>
+	        
 </project>
