@@ -1,2 +1,2 @@
-phing-recipes
+# Phing Recipes
 =============
