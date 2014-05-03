@@ -28,11 +28,11 @@
     </target>
 
     <target name="tmp" description="A test target">
-	
+	<echo>TMP</echo>
     </target>
 
     <target name="tmp" description="A HIDDEN test target" hidden="true">
-	
+	<echo>TMP</echo>
     </target>
 	        
 </project>
