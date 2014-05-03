@@ -1,1 +1,2 @@
 Dummy file for repo-fetch test
+Added some more text, for commit test
