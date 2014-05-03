@@ -25,14 +25,5 @@
 
 	<!-- output -->
 	<echo>${line.separator}${targetList}</echo>
-    </target>
-
-    <target name="tmp" description="A test target">
-	<echo>TMP...</echo>
-    </target>
-
-    <target name="tmp" description="A HIDDEN test target" hidden="true">
-	<echo>Hidden TMP - should still be invokeable</echo>
-    </target>
-	        
+    </target>	        
 </project>
