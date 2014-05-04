@@ -2,7 +2,7 @@
 <project
     name="Phing Recipes"
     description="@todo"
-    basedir="."
+    basedir="../"
     default="help">
 
     <!-- *******************************************************************
