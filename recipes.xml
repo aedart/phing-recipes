@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+    name="Phing Recipes"
+    description="@todo"
+    basedir="../"
+    default="help">
+
+    <!-- *******************************************************************
+	Include properties
+    *********************************************************************-->
+    <property file="phing-recipes/recipes.properties" />
+    
+    <!-- *******************************************************************
+	Display the default available commands
+    *********************************************************************-->
+    <target name="help" description="Displays a list of all available targets to invoke">
+	<!--
+		A quick and dirty way to display all available targets in
+		this build script.
+
+		NOTE: targets with the property 'hidden="true"' will be ignored
+		from the displayed list.
+	-->
+
+	<!-- Property with phing command to execute, for this build file -->
+	<property name="listCommand" value="phing ${phing.file} -list -quiet" />
+
+	<!-- invoke -->
+	<exec command="${listCommand}" outputProperty="targetList" />
+
+	<!-- output -->
+	<echo>${nl}${targetList}</echo>
+    </target>	        
+</project>
