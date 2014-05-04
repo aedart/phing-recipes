@@ -2,14 +2,26 @@
 <project
     name="Phing Recipes"
     description="@todo"
-    basedir="../"
+    basedir="."
     default="help">
 
     <!-- *******************************************************************
 	Include properties
     *********************************************************************-->
-    <property file="phing-recipes/recipes.properties" />
+    <!-- <property file="phing-recipes/recipes.properties" /> -->
+    <!-- <property file="${phing.dir}/recipes.properties" /> -->
     
+    <echo>
+	project.basedir: ${project.basedir} ${line.separator}
+	application.startdir : ${application.startdir} ${line.separator}
+	phing.file : ${phing.file} ${line.separator}
+	phing.dir : ${phing.dir} ${line.separator}
+	phing.project.name : ${phing.project.name} ${line.separator}
+	phing.file.imported : ${phing.file.imported} ${line.separator}
+    </echo>
+	   
+    <property file="${phing.file.imported}/recipes.properties" />
+	     
     <!-- *******************************************************************
 	Display the default available commands
     *********************************************************************-->
