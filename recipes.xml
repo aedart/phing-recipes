@@ -6,6 +6,11 @@
     default="help">
 
     <!-- *******************************************************************
+	Include properties
+    *********************************************************************-->
+    <property file="phing-recipes/recipes.properties" />
+    
+    <!-- *******************************************************************
 	Display the default available commands
     *********************************************************************-->
     <target name="help" description="Displays a list of all available targets to invoke">
@@ -24,6 +29,6 @@
 	<exec command="${listCommand}" outputProperty="targetList" />
 
 	<!-- output -->
-	<echo>${line.separator}${targetList}</echo>
+	<echo>${nl}${targetList}</echo>
     </target>	        
 </project>
