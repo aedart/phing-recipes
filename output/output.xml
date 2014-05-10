@@ -40,6 +40,23 @@
 	</output>
     </target>
     
+    <target name="outputTask-test" description="Test the outputTask" hidden="true">
+	<output message="Output via message attr" />
+	
+	<output msg="Output via msg attr" />
+	
+	<output>
+	    Output via <![CDATA[<output></output>]]> syntax
+	</output>
+	
+	<output>
+	    Output EOL test
+	    Line a
+	    Line b
+	    Line c
+	</output>
+    </target>  
+    
     <!-- *******************************************************************
 	Display the default available commands
     *********************************************************************-->
@@ -65,22 +82,5 @@
     <!-- *******************************************************************
 	Debug methods
     *********************************************************************-->    
-    
-    <target name="output-task-test" description="Test the output task" hidden="true">
-	<output message="Output via message attr" />
-	
-	<output msg="Output via msg attr" />
-	
-	<output>
-	    Output via <![CDATA[<output></output>]]> syntax
-	</output>
-	
-	<output>
-	    Output EOL test
-	    Line a
-	    Line b
-	    Line c
-	</output>
-    </target>    
-    
+        
 </project>
