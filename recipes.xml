@@ -6,14 +6,21 @@
     default="help">
 
     <!-- *******************************************************************
-	Properties
+	Recipes Properties
+	
+	NOTE: Every build-file that is added or improted to Phing, has
+	their own set of paths defined. They can created automatically,
+	based on their project-name, e.g. ${phing.dir.your_project_name}.
+	As such, when recipes.xml is imported from a higher folder level,
+	its path properties can remain the same and therefore able still
+	able to load other files correctly.
     *********************************************************************-->
-	   
-    <!-- A default path to this build script -->   
-    <property name="recipes.basedir" value="${project.basedir}" />
-    
-    <!-- Resolve the path, in case it has been set by user -->
-    <resolvepath propertyName="recipes.basedir" file="${recipes.basedir}"/>
+
+    <!-- Base path (dir), where the recipes.xml is located --> 
+    <property name="recipes.basedir" value="${phing.dir.phing_recipes}" />
+
+    <!-- Path to recipes.xml --> 
+    <property name="recipes.filePath" value="${phing.file.phing_recipes}" />
     
     <!-- Include the primary properties -->
     <property file="${recipes.basedir}/recipes.properties" />
@@ -56,5 +63,26 @@
 	<!-- Recipes paths -->
 	<echo>${nl}</echo>
 	<echo>${nl} recipes.basedir: ${recipes.basedir}</echo>
+	
+	<resolvepath propertyName="recipes.bla" file="phing-recipes/recipes.properties"/>
+	<echo>${nl} recipes.bla: ${recipes.bla}</echo>
+	
+	<resolvepath propertyName="recipes.bla2" file="./recipes.xml"/>
+	<echo>${nl} recipes.bla: ${recipes.bla2}</echo>
+	
+	<echo>${nl} The trick: ${phing.dir.phing_recipes}</echo>
+    </target>
+    
+    <target name="test">
+        <adhoc-task name="foo"><![CDATA[
+            class FooTest extends Task {
+                function main() {
+		    //$this->log("Project var dump: " . print_r($this->project->getProperties(), true));
+		    $this->log("Project var dump: " . print_r($this->project->getProperty('phing.file.phing_recipes'), true));
+                }
+            }
+        ]]></adhoc-task>
+	
+	<foo />
     </target>
 </project>
