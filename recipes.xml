@@ -12,7 +12,7 @@
 	their own set of paths defined. They can created automatically,
 	based on their project-name, e.g. ${phing.dir.your_project_name}.
 	As such, when recipes.xml is imported from a higher folder level,
-	its path properties can remain the same and therefore able still
+	its path properties can remain the same and therefore still
 	able to load other files correctly.
     *********************************************************************-->
 
