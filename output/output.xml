@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project
     name="Phing Recipes Output"
-    description="@todo"
+    description="Tasks that allow you to output text to the console, without using Phing's logging mechanism"
     basedir="."
     default="help">
 
@@ -13,10 +13,32 @@
     <property file="../recipes.properties" />
 
     <!-- *******************************************************************
-	Define tasks
+	Output task definition
     *********************************************************************-->
     <includepath classpath="${phing.dir.phing_recipes_output}" />
     <taskdef name="output" classname="Output" />
+    
+    <target name="outputTask-help" description="Information and example of the outputTask">
+	<output>
+	<![CDATA[
+	    Output is a small console-writer, that outputs text to
+	    the current window console.
+
+	    Example 1: Output via message attribute
+		<output message="Hallo World" />
+
+	    Example 2: Output via message attribute alias
+		<output msg="Hallo" />
+
+	    Example 3: Output without attribute
+		<output>
+		    This is my custom console output
+		    It should print on multiple lines
+		    ...
+		</output>	
+	]]>
+	</output>
+    </target>
     
     <!-- *******************************************************************
 	Display the default available commands
