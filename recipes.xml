@@ -24,7 +24,12 @@
     
     <!-- Include the primary properties -->
     <property file="${recipes.basedir}/recipes.properties" />
-	     
+
+    <!-- *******************************************************************
+	Include default recipes
+    *********************************************************************-->
+    <import file="${recipes.basedir}/output/output.xml"/>
+    
     <!-- *******************************************************************
 	Display the default available commands
     *********************************************************************-->
