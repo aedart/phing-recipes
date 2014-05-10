@@ -10,13 +10,13 @@
     *********************************************************************-->
 	   
     <!-- A default path to this build script -->   
-    <property name="recipes.path" value="${project.basedir}" />
+    <property name="recipes.basedir" value="${project.basedir}" />
     
     <!-- Resolve the path, in case it has been set by user -->
-    <resolvepath propertyName="recipes.path" file="${recipes.path}"/>
+    <resolvepath propertyName="recipes.basedir" file="${recipes.basedir}"/>
     
     <!-- Include the primary properties -->
-    <property file="${recipes.path}/recipes.properties" />
+    <property file="${recipes.basedir}/recipes.properties" />
 	     
     <!-- *******************************************************************
 	Display the default available commands
@@ -55,6 +55,6 @@
 	
 	<!-- Recipes paths -->
 	<echo>${nl}</echo>
-	<echo>${nl} recipes.path: ${recipes.path}</echo>
+	<echo>${nl} recipes.basedir: ${recipes.basedir}</echo>
     </target>
 </project>
