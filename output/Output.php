@@ -3,9 +3,8 @@
 require_once 'phing/Task.php';
 
 /**
- * Output is more or less a mini-version of Phing's EchoTask,
- * with the exception that this task doesn't use the logging
- * or OutputSteam.
+ * Output is a mini-version of Phing's EchoTask, with the
+ * exception that this task doesn't use the logging or OutputSteam.
  *
  * Use this task when you are sure, that you don't need to
  * make use of logging levels, etc.
