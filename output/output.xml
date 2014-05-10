@@ -46,9 +46,18 @@
     
     <target name="output-task-test" description="Test the output task" hidden="true">
 	<output message="Output via message attr" />
+	
 	<output msg="Output via msg attr" />
+	
 	<output>
 	    Output via <![CDATA[<output></output>]]> syntax
+	</output>
+	
+	<output>
+	    Output EOL test
+	    Line a
+	    Line b
+	    Line c
 	</output>
     </target>    
     
