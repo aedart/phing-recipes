@@ -50,7 +50,7 @@
     <!-- *******************************************************************
 	Debug methods
     *********************************************************************-->    
-    <target name="list-phing-paths" description="List all Phing paths">
+    <target name="debug-list-paths" description="List all Phing paths">
 	<!-- Phings paths -->
 	<echo>${nl} application.startdir: ${application.startdir}</echo>
 	<echo>${nl} phing.file: ${phing.file}</echo>
@@ -63,26 +63,19 @@
 	<!-- Recipes paths -->
 	<echo>${nl}</echo>
 	<echo>${nl} recipes.basedir: ${recipes.basedir}</echo>
-	
-	<resolvepath propertyName="recipes.bla" file="phing-recipes/recipes.properties"/>
-	<echo>${nl} recipes.bla: ${recipes.bla}</echo>
-	
-	<resolvepath propertyName="recipes.bla2" file="./recipes.xml"/>
-	<echo>${nl} recipes.bla: ${recipes.bla2}</echo>
-	
+	<echo>${nl} recipes.filePath: ${recipes.filePath}</echo>	
 	<echo>${nl} The trick: ${phing.dir.phing_recipes}</echo>
     </target>
     
-    <target name="test">
-        <adhoc-task name="foo"><![CDATA[
+    <target name="debug-list-phing-properties">
+        <adhoc-task name="phingProps"><![CDATA[
             class FooTest extends Task {
                 function main() {
-		    //$this->log("Project var dump: " . print_r($this->project->getProperties(), true));
-		    $this->log("Project var dump: " . print_r($this->project->getProperty('phing.file.phing_recipes'), true));
+		    $this->log("Project properties: " . print_r($this->project->getProperties(), true));
                 }
             }
         ]]></adhoc-task>
 	
-	<foo />
+	<phingProps />
     </target>
 </project>
