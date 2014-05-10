@@ -2,14 +2,29 @@
 <project
     name="Phing Recipes"
     description="@todo"
-    basedir="../"
+    basedir="."
     default="help">
 
     <!-- *******************************************************************
-	Include properties
+	Recipes Properties
+	
+	NOTE: Every build-file that is added or improted to Phing, has
+	their own set of paths defined. They can created automatically,
+	based on their project-name, e.g. ${phing.dir.your_project_name}.
+	As such, when recipes.xml is imported from a higher folder level,
+	its path properties can remain the same and therefore able still
+	able to load other files correctly.
     *********************************************************************-->
-    <property file="phing-recipes/recipes.properties" />
+
+    <!-- Base path (dir), where the recipes.xml is located --> 
+    <property name="recipes.basedir" value="${phing.dir.phing_recipes}" />
+
+    <!-- Path to recipes.xml --> 
+    <property name="recipes.filePath" value="${phing.file.phing_recipes}" />
     
+    <!-- Include the primary properties -->
+    <property file="${recipes.basedir}/recipes.properties" />
+	     
     <!-- *******************************************************************
 	Display the default available commands
     *********************************************************************-->
@@ -23,12 +38,44 @@
 	-->
 
 	<!-- Property with phing command to execute, for this build file -->
-	<property name="listCommand" value="phing ${phing.file} -list -quiet" />
-
+	<property name="listCommand" value="phing -f ${phing.file} -list -quiet" />
+	
 	<!-- invoke -->
 	<exec command="${listCommand}" outputProperty="targetList" />
 
 	<!-- output -->
 	<echo>${nl}${targetList}</echo>
-    </target>	        
+    </target>
+
+    <!-- *******************************************************************
+	Debug methods
+    *********************************************************************-->    
+    <target name="debug-list-paths" description="List all Phing paths">
+	<!-- Phings paths -->
+	<echo>${nl} application.startdir: ${application.startdir}</echo>
+	<echo>${nl} phing.file: ${phing.file}</echo>
+	<echo>${nl} phing.dir: ${phing.dir}</echo>
+	<echo>${nl} phing.home: ${phing.home}</echo>
+	<echo>${nl} phing.project.name: ${phing.project.name}</echo>
+	<echo>${nl} project.basedir: ${project.basedir}</echo>
+	<echo>${nl} user.home: ${user.home}</echo>
+	
+	<!-- Recipes paths -->
+	<echo>${nl}</echo>
+	<echo>${nl} recipes.basedir: ${recipes.basedir}</echo>
+	<echo>${nl} recipes.filePath: ${recipes.filePath}</echo>	
+	<echo>${nl} The trick: ${phing.dir.phing_recipes}</echo>
+    </target>
+    
+    <target name="debug-list-phing-properties">
+        <adhoc-task name="phingProps"><![CDATA[
+            class FooTest extends Task {
+                function main() {
+		    $this->log("Project properties: " . print_r($this->project->getProperties(), true));
+                }
+            }
+        ]]></adhoc-task>
+	
+	<phingProps />
+    </target>
 </project>
