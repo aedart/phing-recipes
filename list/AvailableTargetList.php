@@ -84,6 +84,11 @@ class AvailableTargetList extends Task{
 	    
 	    // ERROR - cannot open any of the files!?
 	    $newProject = new Project();
+	    $newProject->setSystemProperties();
+	    $newProject->setUserProperty("phing.file", $this->phingFile);
+	    
+	    // @todo: Look at project Config - study it, and parse the fucking
+	    // xml-file your self, without starting to invoke other imports!!!
 	    ProjectConfigurator::configureProject($currentProject, $file);
 	    
 	    echo 'Project name: ' . $newProject->getName() . PHP_EOL;
