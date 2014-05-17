@@ -51,17 +51,33 @@
     <target name="outputTask-test" description="Test the outputTask" hidden="true">
 	<output message="Output via message attr" />
 	
+	<output msg="${nl}" />
+	
 	<output msg="Output via msg attr" />
+	
+	<output msg="${nl}" />
 	
 	<output>
 	    Output via <![CDATA[<output></output>]]> syntax
 	</output>
+	
+	<output msg="${nl}" />
 	
 	<output>
 	    Output EOL test
 	    Line a
 	    Line b
 	    Line c
+	</output>
+	
+	<output msg="${nl}" />
+	
+	<output>
+	    Output Formatting test
+	    Line a  |	Line d	|	Line g
+	    --------------------------------------
+	    Line b  |	Line e	|	Line h
+	    Line c  |	Line f	|	Line i
 	</output>
     </target>  
     

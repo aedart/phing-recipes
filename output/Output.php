@@ -53,6 +53,13 @@ class Output extends Task{
      * @see EchoTask
      */
     function addText($msg){
-        $this->setMessage($msg);
+	// Trim message
+	$m = trim($msg);
+	
+	// Replace tabs and spaces
+	$m = preg_replace('/\t\s+/', '', $m);
+	
+	// Finally, set the message
+        $this->setMessage($m);
     }
 }
