@@ -29,6 +29,7 @@
 	Include default recipes
     *********************************************************************-->
     <import file="${recipes.basedir}/output/output.xml"/>
+    <import file="${recipes.basedir}/list/list.xml"/>
     
     <!-- *******************************************************************
 	Display the default available commands

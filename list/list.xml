@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+    name="Phing Recipes List"
+    description="Tasks and targets that can list the content of elements, e.g. your build-scripts"
+    basedir="."
+    default="help">
+
+    <!-- *******************************************************************
+	Recipes Properties
+    *********************************************************************-->
+    
+    <!-- Include the primary properties, in case they are not already loaded -->
+    <if>
+	<not>
+	    <!-- isRecipesLoaded set inside the recipes.properties -->
+	    <isset property="isRecipesPropertiesLoaded" />
+	</not>
+	<then>
+	    <property file="../recipes.properties" />   
+	</then>
+    </if>
+
+    <!-- *******************************************************************
+	Available Target List task definition
+    *********************************************************************-->
+    <includepath classpath="${phing.dir.phing_recipes_list}" />
+    <taskdef name="availableTargetList" classname="AvailableTargetList" />
+
+    <target name="availableTargetList-test" description="Test the availableTargetListTask" hidden="true">
+	<availableTargetList />
+    </target>
+    
+    <!-- *******************************************************************
+	Display the default available commands
+    *********************************************************************-->
+    <target name="help" description="Displays a list of all available targets to invoke">
+	<!--
+		A quick and dirty way to display all available targets in
+		this build script.
+
+		NOTE: targets with the property 'hidden="true"' will be ignored
+		from the displayed list.
+	-->
+
+	<!-- Property with phing command to execute, for this build file -->
+	<property name="listCommand" value="phing -f ${phing.file} -list -quiet" />
+	
+	<!-- invoke -->
+	<exec command="${listCommand}" outputProperty="targetList" />
+
+	<!-- output -->
+	<echo>${nl}${targetList}</echo>
+    </target>
+
+    <!-- *******************************************************************
+	Debug methods
+    *********************************************************************-->    
+        
+</project>
