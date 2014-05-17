@@ -5,6 +5,7 @@ require_once 'phing/Target.php';
 //require_once 'phing/system/util/Properties.php';
 require_once 'phing/system/io/PhingFile.php';
 include_once 'phing/parser/ProjectConfigurator.php';
+include_once 'phing/tasks/system/PhingTask.php';
 
 /**
  * @todo AvailableTargetList
@@ -72,10 +73,22 @@ class AvailableTargetList extends Task{
 	foreach($imporstStack as $k => $v){
 	    echo '  ' . $k . '   ' . $v . PHP_EOL;
 	    
+	    // Incorrect usage of PhingFIle
 	    $file = new PhingFile($v);
-	    $currentProject = new Project();
+	    $file = new PhingFile($file->getCanonicalPath());
+	    echo 'Absolute file: ' . $file->getAbsoluteFile() . PHP_EOL;
+	    echo 'Absolute path: ' . $file->getAbsolutePath() . PHP_EOL;
+	    echo 'Canonical File: ' . $file->getCanonicalFile() . PHP_EOL;
+	    echo 'Canonical Path: ' . $file->getCanonicalPath() . PHP_EOL;
+	    echo PHP_EOL . PHP_EOL;
+	    
+	    // ERROR - cannot open any of the files!?
+	    $newProject = new Project();
 	    ProjectConfigurator::configureProject($currentProject, $file);
-	    $t = $currentProject->getTargets();
+	    
+	    echo 'Project name: ' . $newProject->getName() . PHP_EOL;
+	    
+	    $t = $newProject->getTargets();
 	    foreach ($t as $tK => $tV){
 		echo '	    ' . $tK . PHP_EOL;
 	    }
