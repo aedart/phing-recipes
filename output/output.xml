@@ -10,7 +10,15 @@
     *********************************************************************-->
     
     <!-- Include the primary properties, in case they are not already loaded -->
-    <property file="../recipes.properties" />
+    <if>
+	<not>
+	    <!-- isRecipesLoaded set inside the recipes.properties -->
+	    <isset property="isRecipesLoaded" />
+	</not>
+	<then>
+	    <property file="../recipes.properties" />   
+	</then>
+    </if>
 
     <!-- *******************************************************************
 	Output task definition
