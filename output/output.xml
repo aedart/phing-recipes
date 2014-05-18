@@ -79,6 +79,37 @@
 	    Line b  |	Line e	|	Line h
 	    Line c  |	Line f	|	Line i
 	</output>
+	
+	<output msg="${nl}" />
+	
+        <adhoc-task name="arrayProp"><![CDATA[
+            class PropTest extends Task {
+                function main() {
+		    $arr = array(
+			'name'	    => 'test',
+			'age'	    => 23,
+			'nested'    => array(11, 45, 'go', false),
+			'secondNested'	=> array(
+			    'newAge'	=> 45
+			)
+		    );
+	    
+		    $this->project->setProperty('outputTaskTestArray', $arr);
+	    
+		    //echo 'Project prop: ' . print_r($this->project-getProperty('outputTaskTestArray'), true) . PHP_EOL;
+                }
+            }
+        ]]></adhoc-task>
+	<arrayProp />
+	<!--
+	    NOTE: Here we pass only the name of the property - or Phing might attempt
+	    to convert the property value into a string
+	-->
+	<output msg="Var Dump Test" propertyName="outputTaskTestArray" varDump="1" />
+	
+	<output msg="${nl}" />
+	<output msg="Property provided, without var dump set to true" propertyName="outputTaskTestArray" varDump="0" />
+	
     </target>  
     
     <!-- *******************************************************************
