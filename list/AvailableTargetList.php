@@ -15,6 +15,14 @@ class AvailableTargetList extends Task{
     protected $targets = [];
     
     /**
+     * The property to which the available
+     * targets must be set to
+     * 
+     * @var string
+     */
+    protected $property;
+    
+    /**
      * Constructor
      */
     public function __construct() {
@@ -53,7 +61,7 @@ class AvailableTargetList extends Task{
 	    // Create a new PhingFile
 	    $file = new PhingFile($filePath);
 	    $file = new PhingFile($file->getCanonicalPath()); // Don't know why this is needed, but wrong path is used, if not!?
-	    
+
 	    // Create a new tmp Phing Project
 	    $newProject = new Project();
 	    $newProject->setSystemProperties();
@@ -112,7 +120,7 @@ class AvailableTargetList extends Task{
 	$projectArr = array(
 	    'name'	    =>  $project->getName(),
 	    'description'   =>	$project->getDescription(),
-	    'buildFile'	    =>	$project->getProperty('phing.file'),
+	    'buildFile'	    =>	$project->getProperty('phing.file')->getPath(),
 	    'defaultTarget' =>	$project->getDefaultTarget(),
 	    'targets'	    =>	[]
 	);
@@ -158,18 +166,40 @@ class AvailableTargetList extends Task{
     }
     
     public function main() {
+	// Check if a property name has been set
+	if($this->property === null){
+	    throw new BuildException("You must specify a property name that must hold the available targets", $this->getLocation());
+	}
+	
 	// Set the available targets
 	$this->targets = $this->getAvailableTargetList();
 	
+	// Store the available targets into the property,
+	// which has been provided
+	$this->project->setProperty($this->property, $this->targets);
+	
+	// Set the log
+	$this->log("Available Targets List stored inside property: " . $this->property, Project::MSG_VERBOSE);
+	
 	// Echo test
-	foreach($this->targets as $key => $project){
-	    echo 'Name: ' . $project['name'] . PHP_EOL;
-	    echo 'Desc: ' . $project['description'] . PHP_EOL;
-	    echo 'Default Target: ' . $project['defaultTarget'] . PHP_EOL;
-	    echo 'File: ' . $project['buildFile'] . PHP_EOL;
-	    print_r($project['targets']) . PHP_EOL;
-	    echo PHP_EOL . PHP_EOL;
-	}
+//	foreach($this->targets as $key => $project){
+//	    echo 'Name: ' . $project['name'] . PHP_EOL;
+//	    echo 'Desc: ' . $project['description'] . PHP_EOL;
+//	    echo 'Default Target: ' . $project['defaultTarget'] . PHP_EOL;
+//	    echo 'File: ' . $project['buildFile'] . PHP_EOL;
+//	    print_r($project['targets']) . PHP_EOL;
+//	    echo PHP_EOL . PHP_EOL;
+//	}
     }
 
+    /**
+     * Set the name of the property that must contain
+     * the available targets
+     * 
+     * @param string $name
+     */
+    public function setProperty($name){
+	$this->property = (string) $name;
+    }
+    
 }
