@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project
     name="Phing Recipes List"
-    description="Tasks and targets that can list the content of elements, e.g. your build-scripts"
+    description="List utility tasks and targets"
     basedir="."
     default="help">
 

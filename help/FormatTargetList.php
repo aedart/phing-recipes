@@ -87,10 +87,10 @@ class FormatTargetList extends Task{
 	$output = $this->getLine();
 	
 	// Name
-	$output .= ' ' . $project['name'] . PHP_EOL;
+	$output .= ' ' . $project['name'] . ': ';
 	
 	// Desc
-	$output .= '	' . $project['description'] . PHP_EOL;
+	$output .= '' . $project['description'] . PHP_EOL;
 	
 	// Build file path
 	$output .= ' (' . $project['buildFile'] . ')' . PHP_EOL;
@@ -103,13 +103,10 @@ class FormatTargetList extends Task{
     
     protected function formatTarget(array $target){
 	// Heading
-	$output = ' ';
+	$output = '';
 	
-	// Name
-	$output .= $target['name'];
-	
-	// Desc
-	$output .= '		' . $target['description'] . PHP_EOL;
+	// Name and description
+	$output .= ' ' . $target['name'] . '	    ' . $target['description'] . PHP_EOL;
 		
 	return $output;
     }
@@ -120,6 +117,6 @@ class FormatTargetList extends Task{
      * @return string
      */
     protected function getLine(){
-	return str_repeat('-', 79) . PHP_EOL;
+	return str_repeat('- - - ', 13) . PHP_EOL;
     }
 }

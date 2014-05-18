@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project
     name="Phing Recipes Output"
-    description="Tasks that allow you to output text to the console, without using Phing's logging mechanism"
+    description="Output utility tasks and targets"
     basedir="."
     default="help">
 
