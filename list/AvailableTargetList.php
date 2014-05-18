@@ -180,16 +180,6 @@ class AvailableTargetList extends Task{
 	
 	// Set the log
 	$this->log("Available Targets List stored inside property: " . $this->property, Project::MSG_VERBOSE);
-	
-	// Echo test
-//	foreach($this->targets as $key => $project){
-//	    echo 'Name: ' . $project['name'] . PHP_EOL;
-//	    echo 'Desc: ' . $project['description'] . PHP_EOL;
-//	    echo 'Default Target: ' . $project['defaultTarget'] . PHP_EOL;
-//	    echo 'File: ' . $project['buildFile'] . PHP_EOL;
-//	    print_r($project['targets']) . PHP_EOL;
-//	    echo PHP_EOL . PHP_EOL;
-//	}
     }
 
     /**
