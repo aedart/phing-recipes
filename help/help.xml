@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+    name="Phing Recipes Help"
+    description="Provides targets that can display the available build targets"
+    basedir="."
+    default="help">
+
+    <!-- *******************************************************************
+	Recipes Properties
+    *********************************************************************-->
+    
+    <!-- Include the primary properties, in case they are not already loaded -->
+    <if>
+	<not>
+	    <!-- isRecipesLoaded set inside the recipes.properties -->
+	    <isset property="isRecipesPropertiesLoaded" />
+	</not>
+	<then>
+	    <property file="../recipes.properties" />   
+	</then>
+    </if>
+
+    <!-- *******************************************************************
+	Recipes Help Properties
+    *********************************************************************-->
+    <property name="isRecipesHelpLoaded" value="1" />
+
+    <!-- *******************************************************************
+	Import other recipes
+    *********************************************************************-->
+    
+    <!-- import only if not already available -->
+    <if>
+	<not>
+	    <isset property="isRecipesListLoaded" />
+	</not>
+	<then>
+	    <import file="../list/list.xml"/>
+	</then>
+    </if>
+        
+    <!-- *******************************************************************
+	Available Target List task definition
+    *********************************************************************-->
+    <includepath classpath="${phing.dir.phing_recipes_help}" />
+    <taskdef name="formatTargetList" classname="FormatTargetList" />
+
+    <target name="formatTargetListTask-test" description="Test the FormatTargetListTask" hidden="true">
+	<availableTargetList property="list" />
+	<formatTargetList listPropertyName="list" />
+	
+    </target>
+    
+    <!-- *******************************************************************
+	Display the default available commands
+    *********************************************************************-->
+    <target name="help" description="Displays a list of all available targets to invoke">
+	<!--
+		A quick and dirty way to display all available targets in
+		this build script.
+
+		NOTE: targets with the property 'hidden="true"' will be ignored
+		from the displayed list.
+	-->
+
+	<!-- Property with phing command to execute, for this build file -->
+	<property name="listCommand" value="phing -f ${phing.file} -list -quiet" />
+	
+	<!-- invoke -->
+	<exec command="${listCommand}" outputProperty="targetList" />
+
+	<!-- output -->
+	<echo>${nl}${targetList}</echo>
+    </target>
+
+    <!-- *******************************************************************
+	Debug methods
+    *********************************************************************-->    
+        
+</project>

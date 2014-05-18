@@ -30,6 +30,7 @@
     *********************************************************************-->
     <import file="${recipes.basedir}/output/output.xml"/>
     <import file="${recipes.basedir}/list/list.xml"/>
+    <import file="${recipes.basedir}/help/help.xml"/>
     
     <!-- *******************************************************************
 	Display the default available commands
