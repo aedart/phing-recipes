@@ -21,13 +21,38 @@
     </if>
 
     <!-- *******************************************************************
+	Recipes List Properties
+    *********************************************************************-->
+    <property name="isRecipesListLoaded" value="1" />
+
+    <!-- *******************************************************************
+	Import other recipes
+    *********************************************************************-->
+    
+    <!-- import only if not already available -->
+    <if>
+	<not>
+	    <isset property="isRecipesOutputLoaded" />
+	</not>
+	<then>
+	    <import file="../output/output.xml"/>
+	</then>
+    </if>
+        
+    <!-- *******************************************************************
 	Available Target List task definition
     *********************************************************************-->
     <includepath classpath="${phing.dir.phing_recipes_list}" />
     <taskdef name="availableTargetList" classname="AvailableTargetList" />
 
-    <target name="availableTargetList-test" description="Test the availableTargetListTask" hidden="true">
-	<availableTargetList />
+    <target name="availableTargetListTask-test" description="Test the availableTargetListTask" hidden="true">
+	<availableTargetList property="list" />
+	
+	<!-- Too fustrating to loop through via the built-in foreach -->
+	<!-- <foreach list="${list}" param="projects" target="_outputProejctList" /> -->
+	
+	<output msg="Available Targets List (var dump)" propertyName="list" varDump="1" />
+	
     </target>
     
     <!-- *******************************************************************
