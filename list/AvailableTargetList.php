@@ -1,8 +1,12 @@
 <?php
 
 /**
- * @todo AvailableTargetList
+ * Available Target List
  *
+ * Creates a list over the avaiable targets, based on the
+ * build-scripts imported into the current project, and
+ * stores that list into a specified property
+ * 
  * @author Alin Eugen Deac
  */
 class AvailableTargetList extends Task{
