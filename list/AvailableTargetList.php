@@ -1,12 +1,5 @@
 <?php
 
-require_once 'phing/Task.php';
-require_once 'phing/Target.php';
-//require_once 'phing/system/util/Properties.php';
-require_once 'phing/system/io/PhingFile.php';
-include_once 'phing/parser/ProjectConfigurator.php';
-include_once 'phing/tasks/system/PhingTask.php';
-
 /**
  * @todo AvailableTargetList
  *
