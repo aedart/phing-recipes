@@ -67,7 +67,7 @@ class AvailableTargetList extends Task{
 	}
 		
 	// Imporst stack - all the build scripts loaded into this project
-	echo PHP_EOL . PHP_EOL . 'Import Stack (loading props): ' . PHP_EOL;
+	echo PHP_EOL . PHP_EOL . 'Parsing (loading props): ' . PHP_EOL;
 	$parser = $this->getProject()->getReference('phing.parsing.context');
 	$imporstStack = $parser->getImportStack();
 	foreach($imporstStack as $k => $v){
@@ -77,10 +77,9 @@ class AvailableTargetList extends Task{
 	    $file = new PhingFile($v);
 	    $file = new PhingFile($file->getCanonicalPath());
 	    echo 'Absolute file: ' . $file->getAbsoluteFile() . PHP_EOL;
-	    echo 'Absolute path: ' . $file->getAbsolutePath() . PHP_EOL;
-	    echo 'Canonical File: ' . $file->getCanonicalFile() . PHP_EOL;
-	    echo 'Canonical Path: ' . $file->getCanonicalPath() . PHP_EOL;
-	    echo PHP_EOL . PHP_EOL;
+	    //echo 'Absolute path: ' . $file->getAbsolutePath() . PHP_EOL;
+	    //echo 'Canonical File: ' . $file->getCanonicalFile() . PHP_EOL;
+	    //echo 'Canonical Path: ' . $file->getCanonicalPath() . PHP_EOL;
 	    
 	    // ERROR - cannot open any of the files!?
 	    $newProject = new Project();
@@ -89,14 +88,41 @@ class AvailableTargetList extends Task{
 	    
 	    // @todo: Look at project Config - study it, and parse the fucking
 	    // xml-file your self, without starting to invoke other imports!!!
-	    ProjectConfigurator::configureProject($currentProject, $file);
+	    //ProjectConfigurator::configureProject($currentProject, $file);
+	    
+	    $ctx = new PhingXMLContext($newProject);
+            $newProject->addReference("phing.parsing.context", $ctx);
+	    $ctx->addImport($file);
+	    $ctx->setCurrentTargets(array());
+	    
+	    // push action onto global stack
+	    $ctx->startConfigure($this);
+
+	    $reader = new BufferedReader(new FileReader($file));
+	    $parser = new ExpatParser($reader);
+	    $parser->parserSetOption(XML_OPTION_CASE_FOLDING,0);
+	    //$parser->setHandler(new RootHandler($parser, $this, $ctx));
+	    $parser->setHandler(new RootHandler($parser, new ProjectConfigurator($newProject, $file), $ctx));
+	    //$this->project->log("parsing buildfile ".$this->buildFile->getName(), Project::MSG_VERBOSE);
+	    $parser->parse();
+	    $reader->close();
+
+	    // mark parse phase as completed
+	    $this->isParsing = false;
+	    // execute delayed tasks
+	    //$this->parseEndTarget->main();
+	    // pop this action from the global stack
+	    $ctx->endConfigure();
+	    
 	    
 	    echo 'Project name: ' . $newProject->getName() . PHP_EOL;
-	    
+	    echo 'Project desc: ' . $newProject->getDescription() . PHP_EOL;
 	    $t = $newProject->getTargets();
 	    foreach ($t as $tK => $tV){
 		echo '	    ' . $tK . PHP_EOL;
 	    }
+	    
+	    echo PHP_EOL . PHP_EOL;
 	}
     }
 
