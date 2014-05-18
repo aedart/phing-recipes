@@ -7,84 +7,79 @@
  */
 class AvailableTargetList extends Task{
     
-    public function __construct() {
-	echo __CLASS__ . ' invoked' . PHP_EOL . PHP_EOL;
-    }
+    /**
+     * Contains the available targets
+     * 
+     * @var array
+     */
+    protected $targets = [];
     
-    public function main() {
+    /**
+     * Constructor
+     */
+    public function __construct() {
 	// Getting the current project's available targets
 	// is a simple as the following line of code.
 	// Sadly, the list doesn't give you any information
 	// about the origin of the targets (from what build file)
-	// $targetsList = $this->project->getTargets();
-		
-	$targetsList = $this->project->getTargets();
-	foreach ($targetsList as $key => $value){
-	    
-	    if(!empty($key)){
-		echo 'key: ' . $key . PHP_EOL;
-		echo 'Key type: ' . gettype($key) . PHP_EOL;
-
-		$target = $value;
-		echo 'Name: ' . $target->getName() . PHP_EOL;
-		echo 'Desc: ' . $target->getDescription() . PHP_EOL;
-		echo 'isHidden: ' . $target->isHidden() . PHP_EOL;
-		
-		$currentProject = $target->getProject();
-		echo 'Project: ' . $currentProject->getName() . PHP_EOL;
-		echo 'Project desc: ' . $currentProject->getName() . PHP_EOL;
-		
-//		$parser = $currentProject->getReference('phing.parsing.context');
-//		$imporstStack = $parser->getImportStack();
-//		foreach($imporstStack as $k => $v){
-//		    echo '  ' . $k . '   ' . $v . PHP_EOL;
-//		}
-		
-		
-		echo PHP_EOL.PHP_EOL;
-	    }
-	}
+	// $targetsList = $this->project->getTargets();	
 	
-	// useless...
-//	$ref =  $this->project->getReferences();
-//	foreach($ref as $k => $v){
-//	    echo '  k: ' . $k . PHP_EOL;
-//	}
+	// NB: It is not possible to perform the getAvailableTargetList()
+	// at this point, since not all properties have been set for
+	// either this tasks project, or the task it self.
+    }
+    
+    /**
+     * Returns the available targets inside this project,
+     * based on the import stack
+     * 
+     * @return array
+     */
+    protected function getAvailableTargetList(){
+	// The target list
+	$list = [];
 	
-	// Imporst stack - all the build scripts loaded into this project
-	echo PHP_EOL . PHP_EOL . 'Import Stack: ' . PHP_EOL;
+	// Get the import stack of this current project
 	$parser = $this->getProject()->getReference('phing.parsing.context');
 	$imporstStack = $parser->getImportStack();
-	foreach($imporstStack as $k => $v){
-	    echo '  ' . $k . '   ' . $v . PHP_EOL;
-	}
-		
-	// Imporst stack - all the build scripts loaded into this project
-	echo PHP_EOL . PHP_EOL . 'Parsing (loading props): ' . PHP_EOL;
-	$parser = $this->getProject()->getReference('phing.parsing.context');
-	$imporstStack = $parser->getImportStack();
-	foreach($imporstStack as $k => $v){
-	    echo '  ' . $k . '   ' . $v . PHP_EOL;
+	
+	// Loop through all the imported build files
+	// and build a new data structure of their targets
+	foreach ($imporstStack as $key => $filePath){
+	    // NOTE: The code below is more or less a copy from
+	    // ProjectConfigurator - without invoking any target
+	    // methods/main().
 	    
-	    // Incorrect usage of PhingFIle
-	    $file = new PhingFile($v);
-	    $file = new PhingFile($file->getCanonicalPath());
-	    echo 'Absolute file: ' . $file->getAbsoluteFile() . PHP_EOL;
-	    //echo 'Absolute path: ' . $file->getAbsolutePath() . PHP_EOL;
-	    //echo 'Canonical File: ' . $file->getCanonicalFile() . PHP_EOL;
-	    //echo 'Canonical Path: ' . $file->getCanonicalPath() . PHP_EOL;
+	    // Create a new PhingFile
+	    $file = new PhingFile($filePath);
+	    $file = new PhingFile($file->getCanonicalPath()); // Don't know why this is needed, but wrong path is used, if not!?
 	    
-	    // ERROR - cannot open any of the files!?
+	    // Create a new tmp Phing Project
 	    $newProject = new Project();
 	    $newProject->setSystemProperties();
-	    $newProject->setUserProperty("phing.file", $this->phingFile);
+	    $newProject->setUserProperty("phing.file", $file);
 	    
-	    // @todo: Look at project Config - study it, and parse the fucking
-	    // xml-file your self, without starting to invoke other imports!!!
-	    //ProjectConfigurator::configureProject($currentProject, $file);
+	    // Parse
+	    $this->_parse($newProject, $file);
 	    
-	    $ctx = new PhingXMLContext($newProject);
-            $newProject->addReference("phing.parsing.context", $ctx);
+	    // Add the given tmp project, and its targets to the list
+	    $list[] = $this->parseProjectToArray($newProject);
+	}
+	
+	// return the list
+	return $list;
+    }
+    
+    /**
+     * Parse the given project / build file
+     * 
+     * @param Project $project
+     * @param PhingFile $file
+     */
+    private function _parse(Project $project, PhingFile $file){
+	    // New XML Context, used for parsing / configuration
+	    $ctx = new PhingXMLContext($project);
+            $project->addReference("phing.parsing.context", $ctx);
 	    $ctx->addImport($file);
 	    $ctx->setCurrentTargets(array());
 	    
@@ -94,27 +89,85 @@ class AvailableTargetList extends Task{
 	    $reader = new BufferedReader(new FileReader($file));
 	    $parser = new ExpatParser($reader);
 	    $parser->parserSetOption(XML_OPTION_CASE_FOLDING,0);
-	    //$parser->setHandler(new RootHandler($parser, $this, $ctx));
-	    $parser->setHandler(new RootHandler($parser, new ProjectConfigurator($newProject, $file), $ctx));
-	    //$this->project->log("parsing buildfile ".$this->buildFile->getName(), Project::MSG_VERBOSE);
+	    $parser->setHandler(new RootHandler($parser, new ProjectConfigurator($project, $file), $ctx));
 	    $parser->parse();
 	    $reader->close();
 
 	    // mark parse phase as completed
 	    $this->isParsing = false;
-	    // execute delayed tasks
-	    //$this->parseEndTarget->main();
+
 	    // pop this action from the global stack
 	    $ctx->endConfigure();
-	    
-	    
-	    echo 'Project name: ' . $newProject->getName() . PHP_EOL;
-	    echo 'Project desc: ' . $newProject->getDescription() . PHP_EOL;
-	    $t = $newProject->getTargets();
-	    foreach ($t as $tK => $tV){
-		echo '	    ' . $tK . PHP_EOL;
+    }
+
+    /**
+     * Parses the given project to an array, containing
+     * the project name, description and its available
+     * targets (which are also parsed to an array)
+     * 
+     * @param Project $project
+     * @return array
+     */
+    protected function parseProjectToArray(Project $project){
+	$projectArr = array(
+	    'name'	    =>  $project->getName(),
+	    'description'   =>	$project->getDescription(),
+	    'buildFile'	    =>	$project->getProperty('phing.file'),
+	    'defaultTarget' =>	$project->getDefaultTarget(),
+	    'targets'	    =>	[]
+	);
+	
+	// Get project targets
+	$targets = $project->getTargets();
+	
+	// Sort the targets according to their name
+	ksort($targets);
+	
+	// Parse the targets to an array
+	foreach ($targets as $key => $target){
+	    // Don't add the first target, because its
+	    // an empty-system-target Phing uses...
+	    if(!empty($key)){
+		// Add the target to the list
+		$projectArr['targets'][] = $this->parseTargetsToArray($target);
 	    }
+	}
+	
+	// Return the proejct array
+	return $projectArr;
+    }
+
+    /**
+     * Parse the given target to an array and return it
+     * 
+     * @param Target $target
+     * @return array
+     */
+    protected function parseTargetsToArray(Target $target){
+	$targetArr = array(
+	    'name'	    =>	$target->getName(),
+	    'description'   =>	$target->getDescription(),
+	    'isHidden'	    =>	$target->isHidden()
 	    
+	    // NOTE: Its possible to add more information here,
+	    // should it be needed
+		
+	);
+	
+	return $targetArr;
+    }
+    
+    public function main() {
+	// Set the available targets
+	$this->targets = $this->getAvailableTargetList();
+	
+	// Echo test
+	foreach($this->targets as $key => $project){
+	    echo 'Name: ' . $project['name'] . PHP_EOL;
+	    echo 'Desc: ' . $project['description'] . PHP_EOL;
+	    echo 'Default Target: ' . $project['defaultTarget'] . PHP_EOL;
+	    echo 'File: ' . $project['buildFile'] . PHP_EOL;
+	    print_r($project['targets']) . PHP_EOL;
 	    echo PHP_EOL . PHP_EOL;
 	}
     }
