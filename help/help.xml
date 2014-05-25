@@ -45,12 +45,21 @@
     <includepath classpath="${phing.dir.phing_recipes_help}" />
     <taskdef name="formatTargetList" classname="FormatTargetList" />
 
-    <target name="formatTargetListTask-test" description="Test the FormatTargetListTask" hidden="true">
+    <target name="formatTargetListTask-test" description="Test the default output" hidden="true">
 	<availableTargetList property="list" />
 	<formatTargetList listPropertyName="list" />
-	
     </target>
-    
+
+    <target name="formatTargetListTask-compact-test" description="Test the compact output" hidden="true">
+	<availableTargetList property="list" />
+	<formatTargetList listPropertyName="list" level="1" />
+    </target>
+
+    <target name="formatTargetListTask-verbose-test" description="Test the verbose output" hidden="true">
+	<availableTargetList property="list" />
+	<formatTargetList listPropertyName="list"  level="3" />
+    </target>
+	        
     <!-- *******************************************************************
 	Display the default available commands
     *********************************************************************-->

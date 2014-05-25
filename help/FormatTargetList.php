@@ -17,6 +17,34 @@
 class FormatTargetList extends Task{
     
     /**
+     * Compact display level
+     * 
+     * @var int
+     */
+    const LEVEL_COMPACT = 1;
+    
+    /**
+     * Default display level
+     * 
+     * @var int
+     */
+    const LEVEL_DEFAULT = 2;
+    
+    /**
+     * Verbose display level
+     * 
+     * @var int
+     */
+    const LEVEL_VERBOSE = 3;
+    
+    /**
+     * The current display level
+     * 
+     * @var int
+     */
+    private $_level;
+    
+    /**
      * Name of the property that holds
      * the available targets
      * 
@@ -42,6 +70,17 @@ class FormatTargetList extends Task{
 	if(is_null($list)){
 	    throw new BuildException("Property '" . $this->_propertyName . "' could not be found. Cannot format available targets", $this->getLocation());
 	}
+		
+	// Validate the evt. provided display level
+	if(!is_null($this->_level)){	    
+	    // Check if below compact or above verbose
+	    if($this->_level < self::LEVEL_COMPACT || $this->_level > self::LEVEL_VERBOSE){
+		throw new BuildException("Provided level '" . $this->_level . "' is invalid", $this->getLocation());
+	    }
+	} else {
+	    // Set the level to be equal the default level
+	    $this->_level = self::LEVEL_DEFAULT;
+	}
 	
 	// Set this task's list
 	$this->_list = $list;
@@ -61,6 +100,15 @@ class FormatTargetList extends Task{
     }
     
     /**
+     * Set the display level of this list
+     * 
+     * @param integer $level
+     */
+    public function setLevel($level){
+	$this->_level = (int) $level;
+    }
+    
+    /**
      * Formats the entire list, foreach available target
      * 
      * @return string
@@ -69,11 +117,26 @@ class FormatTargetList extends Task{
 	// The output string
 	$output = '';
 	
+	// Tmp array for storing target names that have been added
+	// to the output list. This is needed when display level
+	// is set to compact
+	$targetNamesAddedList = [];
+	
 	// Loop through all projects in the list
 	foreach($this->_list as $key => $project){
-	    // Format the project
-	    $output .= $this->formatProject($project);
-	    
+	    // If in compact mode, we only which to display the first
+	    // build project and not all others
+	    if($this->_level == self::LEVEL_COMPACT){
+		// Only if this is the first project
+		if($key == 0){
+		    // Format the project
+		    $output .= $this->formatProject($project);				    
+		}
+	    } else {
+		// Format the project
+		$output .= $this->formatProject($project);		
+	    }
+
 	    // The default target
 	    $defaultTarget = $project['defaultTarget'];
 	    
@@ -96,15 +159,39 @@ class FormatTargetList extends Task{
 		    $isHidden = true;
 		}
 		
+		// Don't dispaly hidden targets, unless the level is verbose
+		if($isHidden == true && $this->_level < self::LEVEL_VERBOSE){
+		    continue;
+		}
+		
 		// Format the target
 		$targetOutput = $this->formatTarget($target, $isDefault, $isHidden);
 		
-		// Append target to output
-		$output .= $targetOutput;
+		// If display level is is to compact, then there might be duplicate
+		// target names (it will look that way when targets have the same
+		// name, across several projects). Thus, when in this mode/level,
+		// only unique target-names are being added to the output
+		if($this->_level == self::LEVEL_COMPACT){
+		    // Append only, if name isn't already appended
+		    $tName = $target['name'];
+		    if(!in_array($tName, $targetNamesAddedList)){
+			// Add to array
+			$targetNamesAddedList[] = $tName;
+			
+			// Add to output
+			$output .= $targetOutput;
+		    }
+		} else {
+		    // Append target to output - as each target is seperated
+		    // by projects
+		    $output .= $targetOutput;   
+		}
 	    }
 	    
-	    // Append double end-of-line
-	    $output .= PHP_EOL .PHP_EOL;
+	    // Append end-of-line - if not in verbose mode
+	    if($this->_level > self::LEVEL_COMPACT){
+		$output .= PHP_EOL;
+	    }
 	}
 	
 	// Finally, return the the output
@@ -131,7 +218,9 @@ class FormatTargetList extends Task{
 	$output .= $this->wordWrap($name . $desc) . PHP_EOL;
 	
 	// Build file path
-	$output .= ' (' . $project['buildFile'] . ')' . PHP_EOL;
+	if($this->_level >= self::LEVEL_VERBOSE){
+	    $output .= ' (' . $project['buildFile'] . ')' . PHP_EOL;
+	}
 	
 	// End heading
 	$output .= $this->getLine();	
