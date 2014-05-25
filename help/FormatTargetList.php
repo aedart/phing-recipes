@@ -66,24 +66,47 @@ class FormatTargetList extends Task{
      * @return string
      */
     protected function formatList(){
+	// The output string
 	$output = '';
 	
+	// Loop through all projects in the list
 	foreach($this->_list as $key => $project){
-	    // Projects
+	    // Format the project
 	    $output .= $this->formatProject($project);
 	    
 	    // The default target
+	    $defaultTarget = $project['defaultTarget'];
 	    
 	    // The available targets
 	    foreach($project['targets'] as $k => $target){
-		//if(!$target['isHidden']){
-		    $output .= $this->formatTarget($target);
-		//}
+		// Is default flag
+		$isDefault = false;
+		
+		// Determine if this target is the default or not
+		if(!is_null($defaultTarget) && $defaultTarget['name'] == $target['name']){
+		    // Means that this should be output as the default
+		    $isDefault = true;
+		}
+		
+		// Format the target
+		$targetOutput = $this->formatTarget($target, $isDefault);
+		
+//		//if(!$target['isHidden']){
+//		
+//		    // Determine if this target is the default or not
+//		    
+//		    $output .= $this->formatTarget($target);
+//		//}
+		
+		// Append target to output
+		$output .= $targetOutput;
 	    }
 	    
+	    // Append double end-of-line
 	    $output .= PHP_EOL .PHP_EOL;
 	}
 	
+	// Finally, return the the output
 	return $output;
     }
     
@@ -116,28 +139,43 @@ class FormatTargetList extends Task{
      * Formats a target
      * 
      * @param array $target
+     * @param boolean $isDefaultTarget		If true, this target will be displayed with a DEFAULT flag
      * @return string
      */
-    protected function formatTarget(array $target){
-	// Heading
+    protected function formatTarget(array $target, $isDefaultTarget = false){
+	// Output
 	$output = '';
 	
-	// Name and description
-	//$output .= ' ' . $target['name'] . '' . $target['description'] . PHP_EOL;
-	
-	//$output .= ' ' . $target['name'] . PHP_EOL;
-	//$output .= '	' . $target['description'] . PHP_EOL . PHP_EOL;
-	
-	$output .= ' ' . $target['name'] . '          | ' . $target['description'] . PHP_EOL . PHP_EOL;
-	
-	$z = '';
-	for($i = 0; $i < 45; $i++){
-	    $z .= $i;
+	// Default flag
+	$defaultFlag = '';
+	if($isDefaultTarget){
+	    $defaultFlag = ' [Default]';
 	}
 	
-	$output .= $z . PHP_EOL . PHP_EOL;
+	// Format the target name. NOTE: since creating tabs can be
+	// problematic, in terms of getting it right, we are just
+	// appending empty chars to the name string, until a max
+	// amount has been reached. This way, the identation between
+	// the target name and description, should be the same, unless
+	// the name is above the max limit.
+	// 
+	// Also the default flag is added here - should this target
+	// be displayed as the default target. If such is the case,
+	// then it will increase the name string length
+	$nameStr = ' ' . $target['name'] . $defaultFlag;
 	
-	$output .= 'z count: ' . strlen($z) . ' ' . PHP_EOL;
+	$nameLenghtMax = 30;
+	$nameStrLength = strlen($nameStr);
+	$nameLengthDiff = $nameLenghtMax - $nameStrLength;
+	if($nameLengthDiff > 0){
+	    $nameStr .= str_repeat(' ', $nameLengthDiff);
+	}
+		
+	// Format description
+	$descStr = ' ' . $target['description'];
+		
+	// Append name and description to the output
+	$output = $nameStr . $descStr . PHP_EOL;
 	
 	return $output;
     }
