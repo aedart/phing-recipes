@@ -82,21 +82,22 @@ class FormatTargetList extends Task{
 		// Is default flag
 		$isDefault = false;
 		
+		// Is hidden flag
+		$isHidden = false;
+		
 		// Determine if this target is the default or not
 		if(!is_null($defaultTarget) && $defaultTarget['name'] == $target['name']){
 		    // Means that this should be output as the default
 		    $isDefault = true;
 		}
 		
-		// Format the target
-		$targetOutput = $this->formatTarget($target, $isDefault);
+		// Determine if this is a hidden target
+		if($target['isHidden']){
+		    $isHidden = true;
+		}
 		
-//		//if(!$target['isHidden']){
-//		
-//		    // Determine if this target is the default or not
-//		    
-//		    $output .= $this->formatTarget($target);
-//		//}
+		// Format the target
+		$targetOutput = $this->formatTarget($target, $isDefault, $isHidden);
 		
 		// Append target to output
 		$output .= $targetOutput;
@@ -140,9 +141,10 @@ class FormatTargetList extends Task{
      * 
      * @param array $target
      * @param boolean $isDefaultTarget		If true, this target will be displayed with a DEFAULT flag
+     * @param boolean $isHidden			If true, this target will be displayed with a HIDDEN flag
      * @return string
      */
-    protected function formatTarget(array $target, $isDefaultTarget = false){
+    protected function formatTarget(array $target, $isDefaultTarget = false, $isHidden = false){
 	// Output
 	$output = '';
 	
@@ -152,6 +154,12 @@ class FormatTargetList extends Task{
 	    $defaultFlag = ' [Default]';
 	}
 	
+	// Hidden flag
+	$hiddenFlag = '';
+	if($isHidden){
+	    $hiddenFlag = ' (hidden)';
+	}
+	
 	// Format the target name. NOTE: since creating tabs can be
 	// problematic, in terms of getting it right, we are just
 	// appending empty chars to the name string, until a max
@@ -159,10 +167,10 @@ class FormatTargetList extends Task{
 	// the target name and description, should be the same, unless
 	// the name is above the max limit.
 	// 
-	// Also the default flag is added here - should this target
-	// be displayed as the default target. If such is the case,
-	// then it will increase the name string length
-	$nameStr = ' ' . $target['name'] . $defaultFlag;
+	// Also the default flag and hidden flag are added here.
+	// If the target is default nad or hidden, then it will
+	// increase the name string length
+	$nameStr = ' ' . $target['name'] . $defaultFlag . $hiddenFlag;
 	
 	$nameLenghtMax = 30;
 	$nameStrLength = strlen($nameStr);
