@@ -60,6 +60,11 @@ class FormatTargetList extends Task{
 	$this->_propertyName = (string) $name;
     }
     
+    /**
+     * Formats the entire list, foreach available target
+     * 
+     * @return string
+     */
     protected function formatList(){
 	$output = '';
 	
@@ -71,9 +76,9 @@ class FormatTargetList extends Task{
 	    
 	    // The available targets
 	    foreach($project['targets'] as $k => $target){
-		if(!$target['isHidden']){
+		//if(!$target['isHidden']){
 		    $output .= $this->formatTarget($target);
-		}
+		//}
 	    }
 	    
 	    $output .= PHP_EOL .PHP_EOL;
@@ -82,6 +87,12 @@ class FormatTargetList extends Task{
 	return $output;
     }
     
+    /**
+     * Formats a project
+     * 
+     * @param array $project
+     * @return string
+     */
     protected function formatProject(array $project){
 	// Heading
 	$output = $this->getLine();
@@ -101,22 +112,52 @@ class FormatTargetList extends Task{
 	return $output;
     }
     
+    /**
+     * Formats a target
+     * 
+     * @param array $target
+     * @return string
+     */
     protected function formatTarget(array $target){
 	// Heading
 	$output = '';
 	
 	// Name and description
-	$output .= ' ' . $target['name'] . '	    ' . $target['description'] . PHP_EOL;
-		
+	//$output .= ' ' . $target['name'] . '' . $target['description'] . PHP_EOL;
+	
+	//$output .= ' ' . $target['name'] . PHP_EOL;
+	//$output .= '	' . $target['description'] . PHP_EOL . PHP_EOL;
+	
+	$output .= ' ' . $target['name'] . '          | ' . $target['description'] . PHP_EOL . PHP_EOL;
+	
+	$z = '';
+	for($i = 0; $i < 45; $i++){
+	    $z .= $i;
+	}
+	
+	$output .= $z . PHP_EOL . PHP_EOL;
+	
+	$output .= 'z count: ' . strlen($z) . ' ' . PHP_EOL;
+	
 	return $output;
     }
     
     /**
      * Returns a string line to be displayed in a console
+     * 
+     * NOTE: A line (at least for windows console) consists
+     * of 80 chars.
      *      
      * @return string
      */
     protected function getLine(){
-	return str_repeat('- - - ', 13) . PHP_EOL;
+	// Create the line
+	$lineStr = str_repeat('- - - - - ', 8);
+	
+	// Remove the last char of the line and add end-of-line
+	$lineStr = substr($lineStr, 0, -1) . PHP_EOL;
+	
+	// Return line
+	return $lineStr;
     }
 }
