@@ -121,6 +121,14 @@ class FormatTargetList extends Task{
 	// to the output list. This is needed when display level
 	// is set to compact
 	$targetNamesAddedList = [];
+
+	// The default target. NOTE: each project must have its
+	// own default target, which might be confusing if all
+	// are marked as being default. Only the top-level
+	// build-script's default target should be marked
+	$defaultTarget = array(
+	    'name'	=> 'N/A'
+	);
 	
 	// Loop through all projects in the list
 	foreach($this->_list as $key => $project){
@@ -137,8 +145,10 @@ class FormatTargetList extends Task{
 		$output .= $this->formatProject($project);		
 	    }
 
-	    // The default target
-	    $defaultTarget = $project['defaultTarget'];
+	    // Set the default target, if this is the first project
+	    if($key == 0){
+		$defaultTarget = $project['defaultTarget'];
+	    }
 	    
 	    // The available targets
 	    foreach($project['targets'] as $k => $target){
@@ -297,7 +307,7 @@ class FormatTargetList extends Task{
 	$maxCharsInLine = 79;
 	
 	// Check if message is above limit
-	if(strlen($msg) > $maxCharsInLine){
+	if(strlen($msg) > $maxCharsInLine){	    
 	    // Use PHP native word-wrap method
 	    $newMsg = wordwrap($msg, $maxCharsInLine, PHP_EOL, true);
 	    

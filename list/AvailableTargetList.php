@@ -157,6 +157,20 @@ class AvailableTargetList extends Task{
 	    }
 	}
 	
+	// Check if default target is still null - in which case it means
+	// that the default target is nested inside some other imported
+	// build-script.
+	if(is_null($projectArr['defaultTarget'])){
+	    // In this case, we create a target, containing only the name
+	    // of the target, which all that we have
+	    $dTarget = new Target();
+	    $dTarget->setName($defaultTargetName);
+	    
+	    // Set the default target - even if it doesn't contain more than the
+	    // name...
+	    $projectArr['defaultTarget'] = $this->parseTargetsToArray($dTarget);
+	}
+	
 	// Return the proejct array
 	return $projectArr;
     }
