@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project
     name="Phing Recipes Help"
-    description="Provides targets that can display the available build targets"
+    description="Provides targets for displaying available build targets"
     basedir="."
     default="help">
 
