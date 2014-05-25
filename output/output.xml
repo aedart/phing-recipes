@@ -48,7 +48,10 @@
 		    This is my custom console output
 		    It should print on multiple lines
 		    ...
-		</output>	
+		</output>
+		
+	    Example 4: Var_dump a property
+		<output msg="Var Dump Test" propertyName="nameOfYouProperty" varDump="1" />
 	]]>
 	</output>
     </target>
