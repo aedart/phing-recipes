@@ -125,12 +125,15 @@ class AvailableTargetList extends Task{
 	    'name'	    =>  $project->getName(),
 	    'description'   =>	$project->getDescription(),
 	    'buildFile'	    =>	$project->getProperty('phing.file')->getPath(),
-	    'defaultTarget' =>	$project->getDefaultTarget(),
+	    'defaultTarget' =>	null,
 	    'targets'	    =>	[]
 	);
 	
 	// Get project targets
 	$targets = $project->getTargets();
+	
+	// Get the name of the default target
+	$defaultTargetName = $project->getDefaultTarget();
 	
 	// Sort the targets according to their name
 	ksort($targets);
@@ -140,8 +143,17 @@ class AvailableTargetList extends Task{
 	    // Don't add the first target, because its
 	    // an empty-system-target Phing uses...
 	    if(!empty($key)){
+		// Parse the target to an array
+		$parsedTarget = $this->parseTargetsToArray($target);
+		
 		// Add the target to the list
-		$projectArr['targets'][] = $this->parseTargetsToArray($target);
+		$projectArr['targets'][] = $parsedTarget;
+		
+		// Check if this target is the default target. If so,
+		// set the projectArr's default target
+		if($target->getName() == $defaultTargetName){
+		    $projectArr['defaultTarget'] = $parsedTarget;
+		}
 	    }
 	}
 	
