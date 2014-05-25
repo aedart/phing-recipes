@@ -74,7 +74,7 @@
 	<echo>${nl} The trick: ${phing.dir.phing_recipes}</echo>
     </target>
     
-    <target name="debug-list-phing-properties">
+    <target name="debug-list-phing-properties" description="A temp debugging target which displays all properties inside this given project. Usefull at the moment, but must be removed at a later point.">
         <adhoc-task name="phingProps"><![CDATA[
             class FooTest extends Task {
                 function main() {

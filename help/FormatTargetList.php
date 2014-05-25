@@ -122,10 +122,13 @@ class FormatTargetList extends Task{
 	$output = $this->getLine();
 	
 	// Name
-	$output .= ' ' . $project['name'] . ': ';
+	$name = ' ' . $project['name'] . ':';
 	
 	// Desc
-	$output .= '' . $project['description'] . PHP_EOL;
+	$desc = ' ' . $project['description'];
+	
+	// Append the name and description to the output
+	$output .= $this->wordWrap($name . $desc) . PHP_EOL;
 	
 	// Build file path
 	$output .= ' (' . $project['buildFile'] . ')' . PHP_EOL;
@@ -183,8 +186,53 @@ class FormatTargetList extends Task{
 	$descStr = ' ' . $target['description'];
 		
 	// Append name and description to the output
-	$output = $nameStr . $descStr . PHP_EOL;
+	$output = $this->wordWrap($nameStr . $descStr, $nameLenghtMax) . PHP_EOL;
 	
+	return $output;
+    }
+    
+    /**
+     * Custom word wrap method, which can add identation to each new line 
+     * 
+     * @param string $msg
+     * @param integer $indentAmountPerNewLine		[OPTIONAL][Default 0 (zero)] Amount of whitespace to ident new lines with
+     * @return string
+     */
+    protected function wordWrap($msg, $indentAmountPerNewLine = 0){
+	// Default output the message
+	$output = $msg;
+	
+	// Max amount of chars in a line (at least in windows cmd!)
+	// 80 chars actually, but a end-of-line would also count
+	// as at least one char!
+	$maxCharsInLine = 79;
+	
+	// Check if message is above limit
+	if(strlen($msg) > $maxCharsInLine){
+	    // Use PHP native word-wrap method
+	    $newMsg = wordwrap($msg, $maxCharsInLine, PHP_EOL, true);
+	    
+	    // Split the msg by the delimitor, into an array of strings
+	    $newMsgArr = split(PHP_EOL, $newMsg);
+	    
+	    // Append the first line to the output (and remove it from the arr)
+	    // The end-od-line is very important here - or the new lines might
+	    // not get indented correctly
+	    $output = array_shift($newMsgArr) . PHP_EOL;
+	    
+	    // Join the evt. remaining lines with an empty space
+	    $remainingLines = implode(' ', $newMsgArr);
+	    
+	    // Add identation to the remaining lines (if any needed)
+	    $indentedLines = str_repeat(' ', $indentAmountPerNewLine) . ' ' . $remainingLines;
+	    
+	    // Add these lines to the output - however, perform a recursive call
+	    // to this method, to ensure that the max chars havn't been reached.
+	    // also, identation will den be perserved
+	    $output .= $this->wordWrap($indentedLines, $indentAmountPerNewLine);
+	}
+	
+	// Return the output
 	return $output;
     }
     
