@@ -49,7 +49,7 @@
 		    It should print on multiple lines
 		    ...
 		</output>
-		
+			
 	    Example 4: Var_dump a property
 		<output msg="Var Dump Test" propertyName="nameOfYouProperty" varDump="1" />
 	]]>

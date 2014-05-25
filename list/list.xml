@@ -45,6 +45,22 @@
     <includepath classpath="${phing.dir.phing_recipes_list}" />
     <taskdef name="availableTargetList" classname="AvailableTargetList" />
     
+    <target name="availableTargetListTask-help" description="Information and example of the availableTargetListTask">
+	<output>
+	<![CDATA[
+	    availableTargetList is a task that will fetch all available targets,
+	    from all imported build-scripts. Thus far, it is being used internally
+	    by the recipes, to display the various "help" targets
+
+	    Example 1: Assign available targets to a user-defined property and
+	    var dump the list
+		<availableTargetList property="myList" />
+		
+		<output msg="Available Targets List (dump)" propertyName="myList" varDump="1" />
+	]]>
+	</output>
+    </target>
+    
     <!-- *******************************************************************
 	Debug methods
     *********************************************************************-->    
